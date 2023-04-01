@@ -1,30 +1,70 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
-  <router-view/>
+  <main-layout/>
 </template>
 
+<script setup>
+import MainLayout from '@/layouts/MainLayout.vue';
+</script>
+
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+/* CLEARING STYLES */
+* {
+  padding: 0;
+  margin: 0;
+  border: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+  font-family: var(--font-goldman), cursive;
 }
-
-nav {
-  padding: 30px;
+*, *:before, *:after {
+  box-sizing: border-box;
 }
-
-nav a {
-  font-weight: bold;
-  color: #2c3e50;
+:focus, :active {
+  outline: none;
 }
-
-nav a.router-link-exact-active {
-  color: #42b983;
+a:focus, a:active {
+  outline: none;
+}
+nav, footer, header, aside {
+  display: block;
+}
+ html, body {
+   height: 100%;
+   width: 100%;
+   line-height: 100%;
+   font-size: 1rem;
+   ms-text-size-adjust: 100%;
+   moz-text-size-adjust: 100%;
+   webkit-text-size-adjust: 100%;
+ }
+input, button, textarea {
+  font-family: inherit;
+}
+   input::-ms-clear {
+     display: none;
+   }
+   button {
+     cursor: pointer;
+     background-color: inherit;
+   }
+button::-moz-focus-inner {
+  padding: 0;
+  border: 0;
+}
+a, a:visited {
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: none;
+}
+ul li {
+  list-style: none;
+}
+img {
+  vertical-align: top;
+}
+h1, h2, h3, h4, h5, h6 {
+  font-size: inherit;
+  font-weight: 400;
 }
 </style>
