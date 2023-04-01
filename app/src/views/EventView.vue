@@ -3,8 +3,10 @@
 <div v-else class="event">
   <div class="event__header header">
     <h2 class="header__title">{{event.title}}</h2>
-    <div class="header__date">{{event.startTime}}</div>
-    <div class="header__time">{{event.startTime}}</div>
+    <div class="header__end">
+      <span class="header__date">{{ date }}</span>
+      <span class="header__time">{{ time }}</span>
+    </div>
   </div>
     <div class="event__info info">
       <div class="info__place">
@@ -32,6 +34,7 @@ import TheLoader from '@/components/TheLoader.vue';
 import BaseButton from '@/components/BaseButton.vue';
 import TheModal from '@/components/SignModal.vue';
 import CongratModal from '@/components/CongratModal.vue';
+import {Formats, formatTime} from '@/utils/utils';
 
 export default {
   name: "EventView",
@@ -48,6 +51,14 @@ export default {
       loading: false,
       isOpen: false,
       isCongratOpen: false,
+    }
+  },
+  computed: {
+    date(){
+      return this.event.startTime ? formatTime(this.event.startTime, Formats.date) : ''
+    },
+    time(){
+      return this.event.startTime ? formatTime(this.event.startTime, Formats.time) : ''
     }
   },
   async created() {
@@ -116,6 +127,7 @@ padding: 0 101px 0 89px;
   height: 418px;
 }
 .header{
+  margin: 50px 0 12px 0;
   display: flex;
   font-size: 35px;
   line-height: 35px;
@@ -128,9 +140,12 @@ padding: 0 101px 0 89px;
   font-size: 50px;
   line-height: 50px;
 }
-.header__date{
-}
-.header__time{
 
+.header__end {
+  margin-left: auto;
+  display: flex;
+}
+.header__date{
+  margin-right: 70px;
 }
 </style>
