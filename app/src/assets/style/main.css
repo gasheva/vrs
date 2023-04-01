@@ -1,0 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=Goldman&display=swap');
+
+:root {
+    --color-green: #586F6B;
+    --color-gray-dark: #B8B8AA;
+    --color-green-pale: #E3E3D4;
+    --color-white: #F5F5F5;
+    --font-goldman: Goldman, cursive;
+    --radius-2: 20px;
+    --radius-1: 15px;
+
+    --margin-right: 54px;
+    --margin-left: 44px;
+}
