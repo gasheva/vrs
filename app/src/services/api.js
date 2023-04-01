@@ -9,7 +9,7 @@ export async function fetchEvents(params){
 
     return [{
         "id": 0,
-        "title": "День числа Пи",
+        "title": "День числа Пи2",
         "description": "День Пи... Ну... День Пи есть день Пи",
         "place": "Студенческий дворец культуры",
         "organizers": "Мех-мат ПГНИУ",

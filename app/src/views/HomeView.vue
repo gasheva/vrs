@@ -3,7 +3,7 @@
   <div class="menu">
     <div class="menu__input">
       <input type="text"
-                v-model="searchVal"
+                v-model.trim="searchVal"
                 placeholder="Search"
                 class="input">
     </div>
@@ -16,52 +16,84 @@
   <section v-else>
     <the-error v-if="error"/>
     <div class="events" v-else>
-      <event-list-item class="events__item" v-for="event in events" :key="event.id" :event="event"/>
+      <event-list-item class="events__item" v-for="event in filteredItems"
+                       :key="event.id"
+                       :event="event"/>
     </div>
+    <paginator-base
+        class="messages__paginator"
+        :currentPageValue="currentPage"
+        :last-page="pageCount"
+        @prev="prevHandler"
+        @next="nextHandler"
+        @openFirst="openFirstHandler"
+        @openLast="openLastHandler"
+        @update:currentPageValue="turnPageHandler"
+    />
   </section>
 </div>
 </template>
 
-<script>
+<script setup>
 import CalendarIcon from '@/icons/CalendarIcon.vue';
 import EventListItem from '@/components/EventListItem.vue';
 import {fetchEvents} from '@/services/api';
 import TheError from '@/components/TheError.vue';
 import debounce from 'lodash.debounce'
 import TheLoader from '@/components/TheLoader.vue';
-export default {
-  name: "HomeView",
-  components: {TheLoader, TheError, EventListItem, CalendarIcon},
+import PaginatorBase from '@/components/PaginatorBase.vue';
+import {computed, onMounted, ref, watch} from 'vue';
+import {usePagination} from '@/composable/pagination';
+import {useRouter} from 'vue-router';
 
-  data() {
-    return {
-      searchVal: '',
-      events: '',
-      error: null,
-      loading: '',
-    }
-  },
+const router = useRouter();
+const searchVal = ref('');
+const events = ref([]);
+const error = ref(null);
+const loading = ref(false);
+const filteredItems = ref([]);
 
-  watch: {
-    searchVal: {
-      immediate: true,
-      handler: debounce(async function () {
-        this.loading = true;
-        await this.fetchEvents({filter:{text: this.searchVal}});
-        this.loading = false;
-      }, 300),
-    }
-  },
+// PAGINATOR
+const {currentPage, next, prev, displayingItems, setup, pageCount, onPage, onFirst, onLast} = usePagination();
+watch(filteredItems, () => {
+  setup(filteredItems.value);
+});
 
-  methods: {
-    redirectToCalendar(){
-      this.$router.push({name: 'calendar'})
-    },
-    async fetchEvents(params) {
-      this.events = await fetchEvents(params);
-    }
+watch([searchVal, displayingItems], debounce(async function () {
+  onFirst()
+  if(searchVal.value?.length) {
+    filteredItems.value = events.value.filter(item => item?.title?.toLocaleLowerCase().includes(searchVal.value.toLocaleLowerCase()) || item?.description?.toLocaleLowerCase().includes(searchVal.value.toLocaleLowerCase()))
   }
+}, 300),{immediate: true})
+const prevHandler = () => {
+  prev();
+};
+const nextHandler = () => {
+  next();
+};
+const turnPageHandler = (_page) => {
+  onPage(_page);
+};
+const openFirstHandler = () => {
+  onFirst();
+};
+const openLastHandler = () => {
+  onLast();
+};
+
+const redirectToCalendar=()=>{
+  router.push({name: 'calendar'})
+};
+const getEvents = async (params) => {
+  events.value = await fetchEvents(params);
+  filteredItems.value = events.value;
 }
+
+onMounted(async ()=>{
+  loading.value = true;
+  await getEvents();
+  loading.value = false;
+})
 </script>
 
 <style scoped>
