@@ -102,6 +102,7 @@ export default {
   height: 52px;
   border-radius: var(--radius-1);
   padding-left: 21px;
+  font-size: 25px;
 }
 
 .input::placeholder {
