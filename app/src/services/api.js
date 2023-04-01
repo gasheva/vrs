@@ -120,7 +120,7 @@ export async function fetchEvents(params){
         {
             "id": 11,
             "title": "День числа Пи",
-            "description": "День Пи... Ну... День Пи есть день Пи",
+            "description": "Last День Пи... Ну... День Пи есть день Пи",
             "place": "Студенческий дворец культуры",
             "organizers": "Мех-мат ПГНИУ",
             "startTime": "2023-03-14T14:00:00.000Z",

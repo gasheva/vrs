@@ -16,7 +16,7 @@
   <section v-else>
     <the-error v-if="error"/>
     <div class="events" v-else>
-      <event-list-item class="events__item" v-for="event in filteredItems"
+      <event-list-item class="events__item" v-for="event in displayingItems"
                        :key="event.id"
                        :event="event"/>
     </div>
@@ -59,11 +59,9 @@ watch(filteredItems, () => {
   setup(filteredItems.value);
 });
 
-watch([searchVal, displayingItems], debounce(async function () {
+watch(searchVal, debounce(function () {
   onFirst()
-  if(searchVal.value?.length) {
-    filteredItems.value = events.value.filter(item => item?.title?.toLocaleLowerCase().includes(searchVal.value.toLocaleLowerCase()) || item?.description?.toLocaleLowerCase().includes(searchVal.value.toLocaleLowerCase()))
-  }
+  filteredItems.value = events.value.filter(item => item?.title?.toLocaleLowerCase().includes(searchVal.value.toLocaleLowerCase()) || item?.description?.toLocaleLowerCase().includes(searchVal.value.toLocaleLowerCase()))
 }, 300),{immediate: true})
 const prevHandler = () => {
   prev();
