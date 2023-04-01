@@ -11,7 +11,10 @@
           <input class="input" type="text" v-model="numberOfTickets" placeholder="numberOfTickets">
         </div>
         <div class="button-wrapper">
-          <base-button text="sign up for an event" color="green-pale" class="modal__button"/>
+          <base-button text="sign up for an event"
+                       color="green-pale"
+                       class="modal__button"
+                       @click="signUp"/>
         </div>
       </div>
     </Teleport>
@@ -34,7 +37,7 @@ export default {
       required: true,
     },
   },
-  emit: ['update:isOpen'],
+  emit: ['update:isOpen', 'sign-up'],
   data(){
     return{
       numberOfTickets: '',
@@ -50,6 +53,9 @@ export default {
   methods:{
     hide(){
       this.$emit('update:isOpen', false);
+    },
+    signUp(){
+      this.$emit('sign-up');
     }
   }
 }

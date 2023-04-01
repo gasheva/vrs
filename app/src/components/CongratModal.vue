@@ -3,8 +3,8 @@
   <Teleport to="body">
     <div class="modal-overlay" @click="hide"/>
     <div class="modal congrat-modal" @click.prevent>
-      thank you!\n
-      your booking is completed
+      <span class="congrat-modal__text">thank you!</span>
+      <span class="congrat-modal__text">your booking is completed</span>
     </div>
   </Teleport>
 </div>
@@ -23,21 +23,30 @@ export default {
   emit: ['update:isOpen'],
 
   methods: {
-    methods:{
       hide(){
         this.$emit('update:isOpen', false);
       }
-    }
   }
 }
 </script>
 
 <style scoped>
 .congrat-modal {
+  width: 50%;
+  height: 264px;
+
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+
+  padding: 90px;
   background-color: var(--color-gray-dark);
   color: white;
+  font-size: 35px;
+  line-height: 35px;
+}
+.congrat-modal__text {
+  text-align: center;
 }
 </style>
