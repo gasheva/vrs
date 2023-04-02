@@ -23,7 +23,7 @@
           </div>
           <the-error v-if="errorSubscr" :error="errorSubscr" color="red"/>
           <base-button v-if="isSubscribe" text="sign up for an event" @click="isOpen = true"/>
-          <base-button v-else-if="!isSubscribe && !isLogin" text="unsubscribe" @click="unsubscribeFromEvent"/>
+          <base-button v-else-if="!isSubscribe && isLogin" text="unsubscribe" @click="unsubscribeFromEvent"/>
         </div>
       </div>
       <the-modal v-if="isOpen" v-model="isOpen"
