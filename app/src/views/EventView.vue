@@ -22,7 +22,7 @@
             <img class="image" :src="event.art" alt="event image">
           </div>
           <the-error v-if="errorSubscr" :error="errorSubscr" color="red"/>
-          <base-button v-if="isSubscribe" text="sign up for an event" @click="isOpen = true"/>
+          <base-button v-if="isSubscribe || !isLogin" text="sign up for an event" @click="isOpen = true"/>
           <base-button v-else-if="!isSubscribe && isLogin" text="unsubscribe" @click="unsubscribeFromEvent"/>
         </div>
       </div>
