@@ -14,22 +14,24 @@
 
   <the-loader v-if="loading"/>
   <section v-else>
-    <the-error v-if="error"/>
-    <div class="events" v-else>
-      <event-list-item class="events__item" v-for="event in displayingItems"
-                       :key="event.id"
-                       :event="event"/>
-    </div>
-    <paginator-base
-        class="messages__paginator"
-        :currentPageValue="currentPage"
-        :last-page="pageCount"
-        @prev="prevHandler"
-        @next="nextHandler"
-        @openFirst="openFirstHandler"
-        @openLast="openLastHandler"
-        @update:currentPageValue="turnPageHandler"
-    />
+    <the-error v-if="error" :error="error" color="red"/>
+    <template v-else>
+      <div class="events">
+        <event-list-item class="events__item" v-for="event in displayingItems"
+                         :key="event.id"
+                         :event="event"/>
+      </div>
+      <paginator-base
+          class="messages__paginator"
+          :currentPageValue="currentPage"
+          :last-page="pageCount"
+          @prev="prevHandler"
+          @next="nextHandler"
+          @openFirst="openFirstHandler"
+          @openLast="openLastHandler"
+          @update:currentPageValue="turnPageHandler"
+      />
+    </template>
   </section>
 </div>
 </template>
@@ -83,8 +85,12 @@ const redirectToCalendar=()=>{
   router.push({name: 'calendar'})
 };
 const getEvents = async (params) => {
-  events.value = await fetchEvents(params);
-  filteredItems.value = events.value;
+  try {
+    events.value = await fetchEvents(params);
+    filteredItems.value = events.value;
+  } catch (err){
+    error.value = err?.message || err;
+  }
 }
 
 onMounted(async ()=>{

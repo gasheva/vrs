@@ -1,45 +1,53 @@
 <template>
-<the-loader v-if="loading"/>
-<div v-else class="event">
-  <div class="event__header header">
-    <h2 class="header__title">{{event.title}}</h2>
-    <div class="header__end">
-      <span class="header__date">{{ date }}</span>
-      <span class="header__time">{{ time }}</span>
+  <div>
+    <the-loader v-if="loading"/>
+    <the-error v-if="error" :error="error" color="red"/>
+    <div v-else-if="!loading && !error" class="event">
+      <div class="event__header header">
+        <h2 class="header__title">{{ event.title }}</h2>
+        <div class="header__end">
+          <span class="header__date">{{ date }}</span>
+          <span class="header__time">{{ time }}</span>
+        </div>
+      </div>
+      <div class="event__info info">
+        <div class="info__place">
+          {{ event.place }}
+        </div>
+        <div class="info__text">
+          {{ event.description }}
+        </div>
+        <div class="info__aside">
+          <div class="info__image">
+            <img class="image" :src="event.art" alt="event image">
+          </div>
+          <the-error v-if="errorSubscr" :error="errorSubscr" color="red"/>
+          <base-button v-if="isSubscribe" text="sign up for an event" @click="isOpen = true"/>
+          <base-button v-else text="unsubscribe" @click="unsubscribeFromEvent"/>
+        </div>
+      </div>
+      <the-modal v-if="isOpen" v-model="isOpen"
+                 :is-event-form="true"
+                 @update:isOpen="isOpen=false"
+                 @sign-up="subscribe"
+                 :event="event"/>
+      <congrat-modal v-if="isCongratOpen" v-model="isCongratOpen" @update:isOpen="isCongratOpen=false"/>
     </div>
   </div>
-    <div class="event__info info">
-      <div class="info__place">
-        {{event.place}}
-      </div>
-      <div class="info__text">
-        {{event.description}}
-      </div>
-      <div class="info__aside">
-        <div class="info__image"></div>
-          <base-button text="sign up for an event" @click="isOpen = true"/>
-      </div>
-  </div>
-  <the-modal v-if="isOpen" v-model="isOpen"
-             :is-event-form="true"
-             @update:isOpen="isOpen=false"
-             @sign-up="showCongratModal"
-             :event="event"/>
-  <congrat-modal v-if="isCongratOpen" v-model="isCongratOpen" @update:isOpen="isCongratOpen=false"/>
-</div>
 </template>
 
 <script>
-import {fetchEvent} from '@/services/api';
+import {checkSubscription, fetchEvent, subscribeToEvent, unsubscribe} from '@/services/api';
 import TheLoader from '@/components/TheLoader.vue';
 import BaseButton from '@/components/BaseButton.vue';
 import TheModal from '@/components/SignModal.vue';
 import CongratModal from '@/components/CongratModal.vue';
 import {Formats, formatTime} from '@/utils/utils';
+import TheError from '@/components/TheError.vue';
 
 export default {
   name: "EventView",
-  components: {CongratModal, TheModal, BaseButton, TheLoader},
+  components: {TheError, CongratModal, TheModal, BaseButton, TheLoader},
   props: {
     id: {
       type: [String, Number],
@@ -52,6 +60,9 @@ export default {
       loading: false,
       isOpen: false,
       isCongratOpen: false,
+      error: '',
+      errorSubscr: '',
+      isSubscribe: false,
     }
   },
   computed: {
@@ -65,15 +76,41 @@ export default {
   async created() {
     this.loading = true;
     await this.fetchEvent();
+    if(this.event?.id) {
+      try{
+        this.isSubscribe = await checkSubscription(this.event.id);
+      } catch (err) {
+        this.error = err?.message || err;
+      }
+    }
     this.loading = false;
   },
   methods: {
     async fetchEvent(id) {
-      this.event = await fetchEvent(id);
+      try{
+        this.event = await fetchEvent(id);
+      } catch(err){
+        this.error = err?.message || err;
+      }
+    },
+    async subscribe(){
+      try {
+        await subscribeToEvent({studentIdent: this.id}, this.event.id);
+        this.showCongratModal();
+      } catch(err){
+        this.error = err?.message || err;
+      }
     },
     showCongratModal(){
       this.isOpen = false;
       this.isCongratOpen = true;
+    },
+    async unsubscribeFromEvent(){
+      try{
+        await unsubscribe()
+      } catch (err){
+        this.errorSubscr = err?.message || err;
+      }
     }
   }
 }
@@ -148,5 +185,8 @@ padding: 0 101px 0 89px;
 }
 .header__date{
   margin-right: 70px;
+}
+.image {
+  max-width: 324px;
 }
 </style>

@@ -13,6 +13,7 @@ export default {
   display: flex;
   width: 80px;
   height: 80px;
+  margin: 0 auto;
 }
 .lds-dual-ring:after {
   content: "";

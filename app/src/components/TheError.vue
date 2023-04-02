@@ -16,7 +16,7 @@ export default {
       type: String,
       default: 'black',
       validator(val) {
-        return ['black', 'white'].includes(val);
+        return ['black', 'white', 'red'].includes(val);
       }
     }
   }
@@ -33,5 +33,8 @@ export default {
 }
 .white {
   color: white;
+}
+.red {
+  color: red;
 }
 </style>
