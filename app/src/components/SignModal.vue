@@ -3,16 +3,16 @@
     <Teleport to="body">
       <div class="modal-overlay" @click="hide"/>
       <div class="modal sign-modal" @click.prevent>
-        <div class="modal__header">you go to <span class="modal__event-title">{{ event.title }}</span></div>
+        <div v-if="isEventForm" class="modal__header">you go to <span class="modal__event-title">{{ event.title }}</span></div>
         <div class="modal__inputs">
           <input class="input" type="text" v-model.trim="name" placeholder="name">
           <input class="input" type="text" v-model.trim="surname" placeholder="surname">
           <input class="input" type="text" v-model.trim="id" placeholder="id">
-          <input class="input" v-model="numberOfTickets" type="text" @keypress="inputNumber" placeholder="numberOfTickets">
+          <input v-if="isEventForm" class="input" v-model="numberOfTickets" type="text" @keypress="inputNumber" placeholder="numberOfTickets">
           <the-error v-if="error" :error="error" color="white"/>
         </div>
         <div class="button-wrapper">
-          <base-button text="sign up for an event"
+          <base-button :text="buttonLabel"
                        color="green-pale"
                        class="modal__button"
                        @click="signUp"/>
@@ -34,9 +34,17 @@ export default {
       type: Boolean,
       default: false,
     },
+    isEventForm: {
+      type: Boolean,
+      default: false,
+    },
+    buttonLabel: {
+      type: String,
+      default: 'sign up for an event',
+    },
     event: {
       type: Object,
-      required: true,
+      default: ()=>({}),
     },
   },
   emit: ['update:isOpen', 'sign-up'],
@@ -47,6 +55,7 @@ export default {
       surname: '',
       id: '',
       error: '',
+      isLogin: false,
     }
   },
 
@@ -63,9 +72,15 @@ export default {
   },
 
   created() {
-    // todo
+    this.checkLocalStorage();
   },
   methods:{
+    checkLocalStorage(){
+      this.name = localStorage.getItem('vse_name');
+      this.surname = localStorage.getItem('vse_surname');
+      this.id = localStorage.getItem('vse_id');
+      this.isLogin = this.name && this.surname && this.id;
+    },
     inputNumber(event){
       this.IsNumber(event)
     },
@@ -84,13 +99,19 @@ export default {
         this.error = 'Fill all fields!';
         return;
       }
-      localStorage.setItem('vse_name', this.name);
-      localStorage.setItem('vse_surname', this.surname);
-      localStorage.setItem('vse_id', this.id);
+      if(!this.isLogin) {
+        localStorage.setItem('vse_name', this.name);
+        localStorage.setItem('vse_surname', this.surname);
+        localStorage.setItem('vse_id', this.id);
+      }
       this.$emit('sign-up');
     },
     validate(){
-      return this.name && this.surname && this.id && this.numberOfTickets;
+      let isValid = this.name && this.surname && this.id;
+      if(this.isEventForm){
+        isValid = isValid && this.numberOfTickets;
+      }
+      return isValid;
     }
   }
 }

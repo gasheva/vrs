@@ -1,21 +1,28 @@
 <template>
 <header class="header">
   <the-logo class="header__logo"/>
-  <button class="header__menu logBtn" v-show="!isLogin" @click="logIn">Log in</button>
+  <button class="header__menu logBtn" v-show="!isLogin" @click="isOpen=true">Log in</button>
   <div class="header__menu" v-show="isLogin">
     <span class="header__credentials">{{surname}} {{name}}</span>
     <button class="logBtn" @click="logOut">Log out</button>
   </div>
+
+  <the-modal v-if="isOpen" v-model="isOpen"
+             :is-event-form="false"
+             button-label="sign up"
+             @update:isOpen="isOpen=false"
+             @sign-up="isOpen=false"/>
 </header>
 </template>
 
 <script>
 import TheLogo from '@/components/TheLogo.vue';
 import UserMenu from '@/components/UserMenu.vue';
+import TheModal from '@/components/SignModal.vue';
 
 export default {
   name: "TheHeader",
-  components: {UserMenu, TheLogo},
+  components: {TheModal, UserMenu, TheLogo},
   data(){
     return {
       isLogin: false,
@@ -23,22 +30,24 @@ export default {
       surname: '',
       id: '',
       interval: null,
+      isOpen: false,
     }
   },
   created() {
+    this.checkLocalStorage();
     this.interval = setInterval(()=>{
-      this.name = localStorage.getItem('vse_name');
-      this.surname = localStorage.getItem('vse_surname');
-      this.id = localStorage.getItem('vse_id');
-      this.isLogin = this.name && this.surname && this.id;
+      this.checkLocalStorage();
     }, 1000)
   },
   unmounted() {
     this.interval && clearInterval(this.interval)
   },
   methods: {
-    logIn(){
-
+    checkLocalStorage(){
+      this.name = localStorage.getItem('vse_name');
+      this.surname = localStorage.getItem('vse_surname');
+      this.id = localStorage.getItem('vse_id');
+      this.isLogin = this.name && this.surname && this.id;
     },
     logOut() {
       localStorage.setItem('vse_name', '');

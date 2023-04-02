@@ -21,6 +21,7 @@
       </div>
   </div>
   <the-modal v-if="isOpen" v-model="isOpen"
+             :is-event-form="true"
              @update:isOpen="isOpen=false"
              @sign-up="showCongratModal"
              :event="event"/>
