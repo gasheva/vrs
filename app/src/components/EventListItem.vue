@@ -5,6 +5,7 @@
     <div>{{time}}</div>
   </div>
   <div class="event__info">
+    <div class="event__title">{{event.title}}</div>
     <div class="event__place">{{event.place}}</div>
     <div class="event__description">{{event.description}}</div>
   </div>
@@ -70,5 +71,9 @@ export default {
 }
 .event__description {
   font-size: 20px;
+}
+.event__title{
+  color: black;
+  font-size: 28px;
 }
 </style>
