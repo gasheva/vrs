@@ -108,6 +108,7 @@ export default {
       try {
         await subscribeToEvent({studentIdent: this.studentId}, this.event.id);
         this.showCongratModal();
+        this.isSubscribe = true;
       } catch(err){
         this.error = err?.message || err;
       }
@@ -118,7 +119,8 @@ export default {
     },
     async unsubscribeFromEvent(){
       try{
-        await unsubscribe({studentIdent: this.studentId}, this.event.id)
+        await unsubscribe({studentIdent: this.studentId}, this.event.id);
+        this.isSubscribe = false;
       } catch (err){
         this.errorSubscr = err?.message || err;
       }
