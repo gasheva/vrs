@@ -86,9 +86,9 @@ export default {
     this.loading = false;
   },
   methods: {
-    async fetchEvent(id) {
+    async fetchEvent() {
       try{
-        this.event = (await fetchEvent(id))?.data?.events;
+        this.event = (await fetchEvent(this.id))?.data?.event;
       } catch(err){
         this.error = err?.message || err;
       }
