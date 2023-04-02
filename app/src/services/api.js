@@ -16,9 +16,9 @@ export async function subscribeToEvent(params, id){
     return service.post(`/events/${id}/subscribe`, params);
 }
 
-export function checkSubscription(id){
-    return service.get(`/events/${id}/checkSubscription`);
+export function checkSubscription(params, id){
+    return service.post(`/events/${id}/checkSubscription`, params);
 }
-export function unsubscribe(id){
-    return service.post(`/events/${id}/unsubscribe`);
+export function unsubscribe(params, id){
+    return service.post(`/events/${id}/unsubscribe`, params);
 }

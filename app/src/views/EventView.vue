@@ -23,7 +23,7 @@
           </div>
           <the-error v-if="errorSubscr" :error="errorSubscr" color="red"/>
           <base-button v-if="isSubscribe" text="sign up for an event" @click="isOpen = true"/>
-          <base-button v-else text="unsubscribe" @click="unsubscribeFromEvent"/>
+          <base-button v-else-if="!isSubscribe && !isLogin" text="unsubscribe" @click="unsubscribeFromEvent"/>
         </div>
       </div>
       <the-modal v-if="isOpen" v-model="isOpen"
@@ -63,6 +63,7 @@ export default {
       error: '',
       errorSubscr: '',
       isSubscribe: false,
+      isLogin: false,
     }
   },
   computed: {
@@ -74,16 +75,23 @@ export default {
     }
   },
   async created() {
+    this.checkLocalStorage();
+    this.interval = setInterval(()=>{
+      this.checkLocalStorage();
+    }, 1000)
     this.loading = true;
     await this.fetchEvent();
     if(this.event?.id) {
       try{
-        this.isSubscribe = (await checkSubscription(this.event.id))?.data?.isSubscribed;
+        this.isSubscribe = (await checkSubscription({studentIdent: this.id}, this.event.id))?.data?.isSubscribed;
       } catch (err) {
         this.error = err?.message || err;
       }
     }
     this.loading = false;
+  },
+  unmounted() {
+    this.interval && clearInterval(this.interval)
   },
   methods: {
     async fetchEvent() {
@@ -107,11 +115,17 @@ export default {
     },
     async unsubscribeFromEvent(){
       try{
-        await unsubscribe()
+        await unsubscribe({studentIdent: this.id}, this.event.id)
       } catch (err){
         this.errorSubscr = err?.message || err;
       }
-    }
+    },
+    checkLocalStorage(){
+      const name = localStorage.getItem('vse_name');
+      const surname = localStorage.getItem('vse_surname');
+      const id = localStorage.getItem('vse_id');
+      this.isLogin = name && surname && id;
+    },
   }
 }
 </script>
