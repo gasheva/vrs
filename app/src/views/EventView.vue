@@ -22,8 +22,8 @@
             <img class="image" :src="event.art" alt="event image">
           </div>
           <the-error v-if="errorSubscr" :error="errorSubscr" color="red"/>
-          <base-button v-if="isSubscribe || !isLogin" text="sign up for an event" @click="isOpen = true"/>
-          <base-button v-else-if="!isSubscribe && isLogin" text="unsubscribe" @click="unsubscribeFromEvent"/>
+          <base-button v-if="!isSubscribe || !isLogin" text="sign up for an event" @click="isOpen = true"/>
+          <base-button v-else-if="isSubscribe && isLogin" text="unsubscribe" @click="unsubscribeFromEvent"/>
         </div>
       </div>
       <the-modal v-if="isOpen" v-model="isOpen"
@@ -64,6 +64,7 @@ export default {
       errorSubscr: '',
       isSubscribe: false,
       isLogin: false,
+      studentId: null,
     }
   },
   computed: {
@@ -83,7 +84,9 @@ export default {
     await this.fetchEvent();
     if(this.event?.id) {
       try{
-        this.isSubscribe = (await checkSubscription({studentIdent: this.id}, this.event.id))?.data?.isSubscribed;
+        if(this.isLogin) {
+          this.isSubscribe = (await checkSubscription({studentIdent: this.studentId}, this.event.id))?.data?.isSubscribed;
+        }
       } catch (err) {
         this.error = err?.message || err;
       }
@@ -103,7 +106,7 @@ export default {
     },
     async subscribe(){
       try {
-        await subscribeToEvent({studentIdent: this.id}, this.event.id);
+        await subscribeToEvent({studentIdent: this.studentId}, this.event.id);
         this.showCongratModal();
       } catch(err){
         this.error = err?.message || err;
@@ -115,7 +118,7 @@ export default {
     },
     async unsubscribeFromEvent(){
       try{
-        await unsubscribe({studentIdent: this.id}, this.event.id)
+        await unsubscribe({studentIdent: this.studentId}, this.event.id)
       } catch (err){
         this.errorSubscr = err?.message || err;
       }
@@ -123,8 +126,8 @@ export default {
     checkLocalStorage(){
       const name = localStorage.getItem('vse_name');
       const surname = localStorage.getItem('vse_surname');
-      const id = localStorage.getItem('vse_id');
-      this.isLogin = name && surname && id;
+      this.studentId = localStorage.getItem('vse_id');
+      this.isLogin = name && surname && this.studentId;
     },
   }
 }
