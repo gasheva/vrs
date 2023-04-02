@@ -1,12 +1,17 @@
 <template>
-<span class="logo">
+<span class="logo" @click="redirectToHome">
   events4u
 </span>
 </template>
 
 <script>
 export default {
-  name: "TheLogo"
+  name: "TheLogo",
+  methods: {
+    redirectToHome(){
+      this.$router.push({name: 'home'});
+    }
+  }
 }
 </script>
 
@@ -16,5 +21,8 @@ export default {
   font: var(--font-goldman);
   font-size: 72px;
   line-height: 72px;
+}
+.logo:hover{
+  cursor: pointer;
 }
 </style>

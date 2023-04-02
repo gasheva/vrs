@@ -114,6 +114,9 @@ onMounted(async ()=>{
   width: 93px;
   height: 93px;
 }
+.menu__calendar:hover{
+  cursor: pointer;
+}
 .menu__input{
   flex: 10;
   display: flex;

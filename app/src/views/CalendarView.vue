@@ -1,7 +1,7 @@
 <template>
 <div class="calendar">
-  <div class="icon">
-    <list-icon @click="redirectToList"/>
+  <div class="icon-wrapper">
+    <list-icon class="icon" @click="redirectToList"/>
   </div>
   <FullCalendar :options='calendarOptions' />
 </div>
@@ -50,9 +50,12 @@ export default {
   margin: 90px;
   margin-top: 10px;
 }
-.icon {
+.icon-wrapper {
   display: flex;
   justify-content: end;
   margin-bottom: 30px;
+}
+.icon:hover{
+  cursor: pointer;
 }
 </style>
