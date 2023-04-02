@@ -78,7 +78,7 @@ export default {
     await this.fetchEvent();
     if(this.event?.id) {
       try{
-        this.isSubscribe = await checkSubscription(this.event.id);
+        this.isSubscribe = (await checkSubscription(this.event.id))?.data?.isSubscribed;
       } catch (err) {
         this.error = err?.message || err;
       }
