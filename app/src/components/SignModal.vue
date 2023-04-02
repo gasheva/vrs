@@ -84,6 +84,9 @@ export default {
         this.error = 'Fill all fields!';
         return;
       }
+      localStorage.setItem('vse_name', this.name);
+      localStorage.setItem('vse_surname', this.surname);
+      localStorage.setItem('vse_id', this.id);
       this.$emit('sign-up');
     },
     validate(){

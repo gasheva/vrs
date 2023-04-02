@@ -22,20 +22,28 @@ export default {
       name: '',
       surname: '',
       id: '',
+      interval: null,
     }
   },
   created() {
-    this.name = localStorage.getItem('vse_name');
-    this.surname = localStorage.getItem('vse_surname');
-    this.id = localStorage.getItem('vse_id');
-    this.isLogin = this.name && this.surname && this.id;
+    this.interval = setInterval(()=>{
+      this.name = localStorage.getItem('vse_name');
+      this.surname = localStorage.getItem('vse_surname');
+      this.id = localStorage.getItem('vse_id');
+      this.isLogin = this.name && this.surname && this.id;
+    }, 1000)
+  },
+  unmounted() {
+    this.interval && clearInterval(this.interval)
   },
   methods: {
     logIn(){
 
     },
     logOut() {
-
+      localStorage.setItem('vse_name', '');
+      localStorage.setItem('vse_surname', '');
+      localStorage.setItem('vse_id', '');
     }
   }
 }
