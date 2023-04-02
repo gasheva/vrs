@@ -1,6 +1,7 @@
 <template>
 <div class="calendar">
   <div class="icon-wrapper">
+    <the-error class="error" v-if="error" :error="error" color="red"/>
     <list-icon class="icon" @click="redirectToList"/>
   </div>
   <FullCalendar :options='calendarOptions' />
@@ -12,9 +13,11 @@ import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import {fetchEvents} from '@/services/api';
 import ListIcon from '@/icons/ListIcon.vue';
+import TheError from '@/components/TheError.vue';
 export default {
   name: "CalendarView",
   components: {
+    TheError,
     ListIcon,
     FullCalendar
   },
@@ -53,9 +56,13 @@ export default {
 .icon-wrapper {
   display: flex;
   justify-content: end;
+  align-items: center;
   margin-bottom: 30px;
 }
 .icon:hover{
   cursor: pointer;
+}
+.error{
+  margin-right: auto;
 }
 </style>
