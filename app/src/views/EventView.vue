@@ -75,6 +75,14 @@ export default {
       return this.event.startTime ? formatTime(this.event.startTime, Formats.time) : ''
     }
   },
+  watch: {
+    isLogin: {
+      immediate: true,
+      handler() {
+        this.checkSubscr()
+      }
+    }
+  },
   async created() {
     this.checkLocalStorage();
     this.interval = setInterval(()=>{
@@ -82,21 +90,21 @@ export default {
     }, 1000)
     this.loading = true;
     await this.fetchEvent();
-    if(this.event?.id) {
-      try{
-        if(this.isLogin) {
-          this.isSubscribe = (await checkSubscription({studentIdent: this.studentId}, this.event.id))?.data?.isSubscribed;
-        }
-      } catch (err) {
-        this.error = err?.message || err;
-      }
-    }
     this.loading = false;
   },
   unmounted() {
     this.interval && clearInterval(this.interval)
   },
   methods: {
+    async checkSubscr(){
+      try{
+        if(this.isLogin && this.id) {
+          this.isSubscribe = (await checkSubscription({studentIdent: this.studentId}, this.id))?.data?.isSubscribed;
+        }
+      } catch (err) {
+        this.error = err?.message || err;
+      }
+    },
     async fetchEvent() {
       try{
         this.event = (await fetchEvent(this.id))?.data?.event;
