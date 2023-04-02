@@ -1,6 +1,9 @@
 <template>
 <article class="event" @click="redirectToEvent">
-  <div class="event__time">{{event.startTime}}</div>
+  <div class="event__time">
+    <div>{{date}}</div>
+    <div>{{time}}</div>
+  </div>
   <div class="event__info">
     <div class="event__place">{{event.place}}</div>
     <div class="event__description">{{event.description}}</div>
@@ -9,12 +12,22 @@
 </template>
 
 <script>
+import {Formats, formatTime} from '@/utils/utils';
+
 export default {
   name: "EventListItem",
   props: {
     event: {
       type: Object,
       required: true,
+    }
+  },
+  computed: {
+    date(){
+      return this.event.startTime ? formatTime(this.event.startTime, Formats.date) : ''
+    },
+    time(){
+      return this.event.startTime ? formatTime(this.event.startTime, Formats.time) : ''
     }
   },
   methods: {
@@ -36,15 +49,19 @@ export default {
   cursor: pointer;
 }
 .event__info {
-  flex: 10;
+  flex: 7;
   display: flex;
   flex-direction: column;
   padding: 0 30px;
 }
 .event__time{
   flex: 1;
+  display: flex;
+  flex-direction: column;
   text-align: center;
-  color: var(--color-green)
+  color: var(--color-green);
+  font-size: 28px;
+  line-height: 28px;
 }
 .event__place{
   color: var(--color-white);
