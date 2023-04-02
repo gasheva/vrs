@@ -5,10 +5,11 @@
       <div class="modal sign-modal" @click.prevent>
         <div class="modal__header">you go to <span class="modal__event-title">{{ event.title }}</span></div>
         <div class="modal__inputs">
-          <input class="input" type="text" v-model="name" placeholder="name">
-          <input class="input" type="text" v-model="surname" placeholder="surname">
-          <input class="input" type="text" v-model="id" placeholder="id">
-          <input class="input" type="text" v-model="numberOfTickets" placeholder="numberOfTickets">
+          <input class="input" type="text" v-model.trim="name" placeholder="name">
+          <input class="input" type="text" v-model.trim="surname" placeholder="surname">
+          <input class="input" type="text" v-model.trim="id" placeholder="id">
+          <input class="input" v-model="numberOfTickets" type="text" @keypress="inputNumber" placeholder="numberOfTickets">
+          <the-error v-if="error" :error="error" color="white"/>
         </div>
         <div class="button-wrapper">
           <base-button text="sign up for an event"
@@ -23,10 +24,11 @@
 
 <script>
 import BaseButton from '@/components/BaseButton.vue';
+import TheError from '@/components/TheError.vue';
 
 export default {
   name: "TheModal",
-  components: {BaseButton},
+  components: {TheError, BaseButton},
   props: {
     isOpen: {
       type: Boolean,
@@ -44,18 +46,48 @@ export default {
       name: '',
       surname: '',
       id: '',
+      error: '',
     }
+  },
+
+  watch: {
+    name() {
+      this.error = '';
+    },
+    surname(){
+      this.error = '';
+    },
+    id(){
+      this.error = '';
+    },
   },
 
   created() {
     // todo
   },
   methods:{
+    inputNumber(event){
+      this.IsNumber(event)
+    },
+    IsNumber(event) {
+      if (!/\d/.test(event.key)) {
+        return event.preventDefault();
+      }
+      this.error = '';
+    },
     hide(){
       this.$emit('update:isOpen', false);
     },
     signUp(){
+      const isValid = this.validate();
+      if(!isValid) {
+        this.error = 'Fill all fields!';
+        return;
+      }
       this.$emit('sign-up');
+    },
+    validate(){
+      return this.name && this.surname && this.id && this.numberOfTickets;
     }
   }
 }
