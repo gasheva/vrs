@@ -4,7 +4,7 @@
     <the-error class="error" v-if="error" :error="error" color="red"/>
     <list-icon class="icon" @click="redirectToList"/>
   </div>
-  <FullCalendar :options='calendarOptions' />
+  <FullCalendar :options='calendarOptions'/>
 </div>
 </template>
 
@@ -14,6 +14,7 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import {fetchEvents} from '@/services/api';
 import ListIcon from '@/icons/ListIcon.vue';
 import TheError from '@/components/TheError.vue';
+import router from '@/router';
 export default {
   name: "CalendarView",
   components: {
@@ -26,7 +27,9 @@ export default {
       calendarOptions: {
         plugins: [dayGridPlugin],
         initialView: 'dayGridMonth',
+        selectable: true,
         events: [],
+        eventClick: this.redirectToEvent,
       },
       error: null,
     }
@@ -34,8 +37,8 @@ export default {
 
   async created() {
     try{
-      this.events = (await fetchEvents())?.data?.events
-          ?.map(event=>({start: new Date(event.startTime), title: event.title}));
+      this.calendarOptions.events = (await fetchEvents()).data?.events
+          ?.map(event=>({start: new Date(event.startTime), title: event.title, id: event.id}));
     } catch (err){
       this.error = err?.message || err
     }
@@ -43,6 +46,9 @@ export default {
   methods: {
     redirectToList(){
       this.$router.push({name: 'home'})
+    },
+    redirectToEvent(event){
+      this.$router.push({name: 'event', params: {id: event.event._def.publicId}})
     }
   }
 }
