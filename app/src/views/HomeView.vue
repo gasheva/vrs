@@ -86,7 +86,7 @@ const redirectToCalendar=()=>{
 };
 const getEvents = async (params) => {
   try {
-    events.value = await fetchEvents(params);
+    events.value = (await fetchEvents(params)).data.events;
     filteredItems.value = events.value;
   } catch (err){
     error.value = err?.message || err;

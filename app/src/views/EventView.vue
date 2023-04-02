@@ -88,7 +88,7 @@ export default {
   methods: {
     async fetchEvent(id) {
       try{
-        this.event = await fetchEvent(id)?.data?.events;
+        this.event = (await fetchEvent(id))?.data?.events;
       } catch(err){
         this.error = err?.message || err;
       }
